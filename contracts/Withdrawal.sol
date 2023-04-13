@@ -8,12 +8,12 @@ interface IERC20 {
   function transferFrom(address from, address to, uint amount) external returns(bool);
 }
 
-contract WeakContract {
+contract Withdrawal {
 
   mapping (address => uint256) public tokenBalances;
   mapping (address => uint256) public balances;
 
-  function withdraw() public {
+  function withdrawCelo() public {
     uint _balance = balances[msg.sender];
     (bool done,) = address(msg.sender).call{value: _balance}("");
     require(done);
@@ -33,9 +33,7 @@ contract WeakContract {
   function withdrawToken(address _token) public {
     require(_token != address(0), "Token is zero address");
     uint tBalance = tokenBalances[msg.sender];
-    if(tBalance > 0) {
-      IERC20(_token).transfer(msg.sender, tBalance);
-      tokenBalances[msg.sender] -= tBalance;
-    }
+    IERC20(_token).transfer(msg.sender, tBalance);
+    tokenBalances[msg.sender] -= tBalance;
   }
 }
